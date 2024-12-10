@@ -1,0 +1,55 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+<!-- Название у нас будет products -->
+{% block title %}
+All_news
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1>Все {{ essence }}: {{ count }}</h1>
+{% if perms.news.add_post %}
+    <h2>
+        + <a href="create">добавить</a> +
+    </h2>
+{% endif %}
+
+{% for news in all_news %}
+    <hr>
+    <h4>
+        <a href="/{{news.essence|translate_essence}}/{{ news.id }}">
+            {{ news.header|censor }}
+        </a>
+    </h4>
+    <div class="text-secondary">
+    {% for category in news.category.all %}
+        {{ category }}
+    {% endfor %}
+    </div>
+    <div class="text-secondary">{{ news.date|date:'d M Y' }}</div>
+    <p>{{ news.text|truncatewords:20|censor}}</p>
+{% endfor %}
+
+{% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}

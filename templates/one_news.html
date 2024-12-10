@@ -1,0 +1,22 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+<!-- Название у нас будет products -->
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
+{% block content %}
+<h1>{{ news.header|censor }}</h1>
+<h3>{{ news.date|date:'d M Y' }}</h3>
+<p>{{ news.text|censor }}</p>
+{% if perms.news.delete_post %}
+    <a href="{{ news.id }}/delete/">Delete 🗑</a>
+{% endif %}
+{% if perms.news.change_post %}
+    <a href="{{ news.id }}/edit/">Edit ✏</a>
+{% endif %}
+{% endblock content %}

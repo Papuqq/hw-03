@@ -1,0 +1,56 @@
+from news.models import *
+
+user_1 = User.objects.create_user('Artem')
+user_2 = User.objects.create_user('Ivan')
+
+author_1 =  Author.objects.create(user = user_1)
+author_2 =  Author.objects.create(user = user_2)
+
+category_sport = Category.objects.create(name = 'Sport')
+category_policy = Category.objects.create(name = 'Policy')
+category_culture = Category.objects.create(name = 'Culture')
+category_tourism = Category.objects.create(name = 'Tourism')
+
+text_1 = 'Как сбежавшие из России производители моторных масел хитрым образом возвращаются в Россию Мировые «масляные» бренды, сбежавшие из нашей страны, сегодня несут катастрофические убытки в твердой валюте, ведь российский рынок потребляет такое количество разнообразных моторных, трансмиссионных и других смазок, которые и не снились любому локальному рынку в Европе. И поскольку деньги счет любят, ни высокая политика, ни некие демократические ценности не заставит воротил бизнеса от них отказаться. И те же производители моторных масел придумали простую, но действенную схему «тайного» возвращения на наш рынок. Так, например, некая испанская инвестиционная компания запустила в минувшем году в Турции, отказавшейся влезать в санкционную войну с РФ, мощный завод по производству масел по рецептурам (с использованием соответствующих присадок) самых маститых мировых производителей лубрикантов. И теперь на этой фабрике блендируют – смешивают – моторные масла для легковых и грузовых авто, сельскохозяйственной и другой специальной техники. При этом получаемый продукт имеет допуски практически всех мировых автостроителей. То есть их можно лить хоть в подержанных «корейцев», хоть в новейших «немцев». Так что если вы в скором времени встретите на прилавках автомагазинов доселе неизвестное испанское моторное масло (несколько линеек, подбрендов, европейское качество), выпущенное в Турции – не спешите отказываться и лить в двигатель любимой «ласточки» некие отечественные аналоги.'
+post_1 = Post.objects.create(author = author_1, essence = Post.article, header = 'Турецкое масло', text = text_1)
+PostCategory.objects.create(post = post_1, category = category_policy)
+
+text_2 = 'Новые объектно-ориентированные языки программирования появляются постоянно. Но несмотря на это, C++ был и остаётся в топе самых востребованных. Разбираемся, почему. Начнём с того, что C++ нужен для решений, требующих высокой производительности машины. Видеоигры класса AAA, интернет вещей, встраиваемые системы, ресурсоёмкие приложения VR и AI — все это работает на C или C++. Так что язык живее всех живых, и есть несколько причин, чтобы начать свой путь в программировании именно с него.'
+post_2 = Post.objects.create(author = author_2, essence = Post.article, header = 'Почему лучше учить сложный C++, чем простые Python/Java', text = text_2)
+PostCategory.objects.create(post = post_2, category = category_culture)
+
+text_3 = 'МОСКВА, 6 фев - РИА Новости. Бывшая ученица группы тренера Этери Тутберидзе фигуристка Элизабет Турсынбаева из Казахстана сообщила, что баллотируется в депутаты маслихата Алма-Аты от партии "Аманат". "Да, это пока кандидатство, но я испытываю большую ответственность и честь за возможность в будущем стать человеком-представителем, который бы смог делать изменения в лучшую сторону. Это только начало. Легко быть аутсайдером и жаловаться на систему, намного сложнее действовать, поэтому для меня это непростой шаг. С вашей поддержкой и совместными усилиями все задуманное получится", - добавила экс-фигуристка.'
+post_3 = Post.objects.create(author = author_2, header = 'Бывшая ученица Тутберидзе баллотируется в депутаты в Казахстане', text = text_3)
+PostCategory.objects.create(post = post_3, category = category_sport)
+PostCategory.objects.create(post = post_3, category = category_policy)
+
+comment_1 = Comment.objects.create(post = post_1, user = user_2, text = 'Интересная статья про автомобильные масла')
+comment_2 = Comment.objects.create(post = post_2, user = user_1, text = 'Мы не за что не бросим Python')
+comment_3 = Comment.objects.create(post = post_3, user = user_1, text = 'Одни спортсмены в политике')
+comment_4 = Comment.objects.create(post = post_3, user = user_2, text = 'Спорту все дороги открыты')
+
+post_1.like()
+post_2.like()
+post_3.like()
+post_3.like()
+
+comment_1.like()
+comment_2.like()
+comment_3.like()
+comment_4.like()
+
+author_1.update_rating()
+author_2.update_rating()
+
+Author.objects.all().order_by('-rating').values('user__username', 'rating')[0]  #т.к. рейтинг есть только у Автора, ищем лучшего среди них
+
+Post.objects.all().order_by('-rating').values('date', 'author__user__username', 'rating', 'header')[0]
+
+best = Post.objects.all().order_by('-rating')[0]
+best.date
+best.author.user
+best.rating
+best.header
+best.preview()
+
+Comment.objects.filter(post_id = best.id)
