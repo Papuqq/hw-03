@@ -1,9 +1,8 @@
 # HW-03 project SkillFactory
-        Project name - News portal
         test user with author's rights
         mail: new_user@test.com
         pass: pass12345
-        and for http://127.0.0.1:8000/admin/ - admin admin
+        admin: admin admin
 
 # install
         venv\scripts\activate
@@ -20,8 +19,6 @@
 # Open terminal and input:
         cd NewsPaper
         python manage.py runserver
-
-    local address - http://127.0.0.1:8000/
 
 # navigation menu caching for 30 seconds
         All posts
